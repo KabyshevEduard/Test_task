@@ -1,0 +1,2 @@
+FROM postgres
+COPY /pgdata /var/lib/postgres/data/pgdata 

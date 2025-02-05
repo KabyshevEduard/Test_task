@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+    db:
+        build:
+            context: .
+            dockerfile: dockerfile_postgres
+        container_name: db
+        environment:
+            POSTGRES_USER: e2rd
+            POSTGRES_PASSWORD: lex2mubds
+            PGDATA: /var/lib/postgresql/data/pgdata
+            POSTGRES_DB: test_task
+        restart: unless-stopped
+        networks:
+            - default
+            - backend_network
+
+    python_container:
+        build:
+            context: .
+            dockerfile: dockerfile_python
+        container_name: python_container
+        environment: 
+            PG_HOST: postgresql+asyncpg://e2rd:lex2mubds@db/test_task
+        ports:
+            - "8000:3000"
+        restart: unless-stopped
+        networks:
+            - default
+            - backend_network
+        
+
+networks:
+    backend_network:
+        name: backend_network
+        driver: bridge
